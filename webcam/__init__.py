@@ -1,0 +1,1 @@
+from webcam.views import detect
