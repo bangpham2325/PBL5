@@ -128,7 +128,7 @@ if not evaluate:
     os.makedirs(out)  # make new output folder
 device = select_device(device)
 model = DetectMultiBackend(opt.yolo_weights, device=device, dnn=opt.dnn)
-stride, names, pt, jit, onnx = model.stride, model.names, model.pt, model.jit, model.onnx
+stride, pt, jit, onnx = model.stride, model.pt, model.jit, model.onnx
 imgsz = check_img_size(imgsz, s=stride)  # check image size
 
 # Half
@@ -155,7 +155,7 @@ else:
 vid_path, vid_writer = [None] * bs, [None] * bs
 
 # Get names and colors
-names = ['Bicycle', 'Bus', 'Car', 'Motorcycle', 'Truck']
+
 save_path = str(Path(out))
 # extract what is in between the last '/' and last '.'
 txt_file_name = source.split('/')[-1].split('.')[0]
@@ -167,8 +167,9 @@ if pt and device.type != 'cpu':
 
 
 def detect(df):
+    names = model.names
     dt, seen = [0.0, 0.0, 0.0, 0.0], 0
-
+    names = ['Bicycle', 'Bus', 'Car', 'Motorcycle', 'Truck']
     previous_frame, current_frame = [-1, -1]
     vehicle_infos = {}  # id:{start in view, exit view, type }
     list_vehicles = set()  # LIST CONTAIN vehicles HAS APPEARED, IF THAT VEHICLE HAD BEEN UPLOADED TO DB, REMOVE THAT VEHICLE
@@ -177,8 +178,6 @@ def detect(df):
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
-        # frame_height = im0s.shape[0]
-        # frame_width = im0s.shape[1]
         if img.ndimension() == 3:
             img = img.unsqueeze(0)
         t2 = time_sync()
@@ -210,9 +209,7 @@ def detect(df):
             s += '%gx%g ' % img.shape[2:]  # print string
 
             annotator = Annotator(im0, line_width=2, pil=not ascii)
-            # draw red zones
-            # # zone_drawer.draw(im0, frame_width=frame_width, frame_height=frame_height, upper_ratio=upper_ratio,
-            #                  lower_ratio=lower_ratio)
+
             w, h = im0.shape[1], im0.shape[0]
             if det is not None and len(det):
                 # Rescale boxes from img_size to im0 size

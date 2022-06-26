@@ -22,7 +22,7 @@ came_name: cam1
 
 #in-out
 fourcc: mp4v
-source: Traffic.Mp4
+source: videos/highway2.mp4
 #source: 'http://192.168.1.12:8160/'
 output: inference/output
 save_csv: true
