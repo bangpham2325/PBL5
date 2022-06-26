@@ -16,9 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-
 from webcam import views
 urlpatterns = [
     path('', views.index, name='index'),
-    path('video_feed/', views.video_feed, name='video_feed')
+    path('video_feed/', views.video_feed, name='video_feed'),
+    path('count_vehicle', views.count_vehicle, name='count'),
 ]

@@ -1,6 +1,5 @@
-
 from django.shortcuts import render
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponse
 from flask import Response
 from flask import Flask
 from flask import render_template
@@ -48,7 +47,6 @@ import pyrebase
 from datetime import datetime
 from dotenv import load_dotenv
 
-
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 deepsort root directory
 if str(ROOT) not in sys.path:
@@ -60,6 +58,7 @@ sheet = {}
 now = datetime.now()
 env_path = Path('.', '.env')
 load_dotenv(dotenv_path=env_path)
+
 
 def upload_firebase():
     config = {
@@ -75,20 +74,24 @@ def upload_firebase():
     storage = firebase.storage()
     # db = firebase.database()
     if datetime.now().hour == 0 and datetime.now().minute == 0 and datetime.now().second == 0:
-        storage.child(came_name + "_vehicle.csv.csv").put(came_name+"_vehicle.csv")
+        storage.child(came_name + "_vehicle.csv.csv").put(came_name + "_vehicle.csv")
+
 
 def count_obj(box, w, h, id):
-    global count,data
-    center_coordinates = (int(box[0]+(box[2]-box[0])/2) , int(box[1]+(box[3]-box[1])/2))
-    if int(box[1]+(box[3]-box[1])/2) > (h -350):
+    global count, data
+    center_coordinates = (int(box[0] + (box[2] - box[0]) / 2), int(box[1] + (box[3] - box[1]) / 2))
+    if int(box[1] + (box[3] - box[1]) / 2) > (h - 350):
         if id not in data:
             count += 1
             data.append(id)
+
 
 def index(request):
     return render(request, 'index.html')
 
 
+async def count_vehicle(request):
+    return HttpResponse(count)
 
 config = read_yml('settings/config.yml')
 
@@ -96,11 +99,11 @@ opt = OPT(config=config)
 
 opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
 df = pd.DataFrame(columns=["VehicleID", "Date", "Time", "Camera", "Speed", "Type"])
-out, source, yolo_weights, deep_sort_weights, show_vid, save_vid, save_txt, save_csv, imgsz, evaluate, half, came_name = \
+out, source, yolo_weights, deep_sort_weights, show_vid, save_vid, save_txt, save_csv, imgsz, evaluate, half = \
     opt.output, opt.source, opt.yolo_weights, opt.deep_sort_weights, opt.show_vid, opt.save_vid, \
-    opt.save_txt, opt.save_csv, opt.imgsz, opt.evaluate, opt.half, opt.came_name
+    opt.save_txt, opt.save_csv, opt.imgsz, opt.evaluate, opt.half
 firebase = True
-
+came_name = "cam1"
 webcam = source == '0' or source.startswith(
     'rtsp') or source.startswith('http') or source.endswith('.txt')
 
@@ -277,7 +280,6 @@ def detect(df):
                 if len(outputs) > 0:
 
                     for j, (output, conf) in enumerate(zip(outputs, confs)):
-
                         bboxes = output[0:4]
                         id = output[4]
                         cls = output[5]
@@ -296,7 +298,6 @@ def detect(df):
             else:
                 deepsort.increment_ages()
                 LOGGER.info('No detections')
-
 
             # Stream results
             im0 = annotator.result()
@@ -342,7 +343,6 @@ def detect(df):
 
         previous_frame = current_frame
 
-
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
     LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
@@ -353,5 +353,3 @@ def detect(df):
 
 async def video_feed(request):
     return StreamingHttpResponse(detect(df), content_type='multipart/x-mixed-replace; boundary=frame')
-
-
