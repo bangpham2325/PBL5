@@ -86,10 +86,6 @@ def count_obj(box, w, h, id):
             data.append(id)
 
 
-def index(request):
-    return render(request, 'index.html')
-
-
 async def count_vehicle(request):
     return HttpResponse(count)
 
@@ -103,7 +99,8 @@ out, source, yolo_weights, deep_sort_weights, show_vid, save_vid, save_txt, save
     opt.output, opt.source, opt.yolo_weights, opt.deep_sort_weights, opt.show_vid, opt.save_vid, \
     opt.save_txt, opt.save_csv, opt.imgsz, opt.evaluate, opt.half
 firebase = True
-came_name = "cam1"
+came_name = "cam2"
+source = "videos/highway3.mp4"
 webcam = source == '0' or source.startswith(
     'rtsp') or source.startswith('http') or source.endswith('.txt')
 
@@ -348,5 +345,5 @@ def detect(df):
         print('Results saved to %s' % os.getcwd() + os.sep + out)
 
 
-async def video_cam1(request):
+async def video_cam2(request):
     return StreamingHttpResponse(detect(df), content_type='multipart/x-mixed-replace; boundary=frame')

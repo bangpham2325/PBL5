@@ -14,11 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 
-from webcam import views
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('video_feed/', views.video_feed, name='video_feed'),
-    path('count_vehicle', views.count_vehicle, name='count'),
+    path('webcam1/', include('webcam.urls')),
+    path('webcam2/', include('webcam2.urls')),
+
 ]
