@@ -65,7 +65,7 @@ def upload_firebase():
     storage = firebase.storage()
     # db = firebase.database()
     if datetime.now().hour == 0 and datetime.now().minute == 0 and datetime.now().second == 0:
-        storage.child("vehicle.csv.csv").put("vehicle.csv")
+        storage.child("cam1_vehicle.csv.csv").put("cam1_vehicle.csv")
 
 def count_obj(box, w, h, id):
     global count,data
@@ -259,7 +259,7 @@ class Tracker:
                                                            columns=["VehicleID", "Date", "Time", "Camera", "Speed", "Type"])
 
                                         self.df = self.df.append(df3, ignore_index=True)
-                                        Thread(target=self.df.to_csv('vehicle.csv', index=False), args=[]).start()
+                                        Thread(target=self.df.to_csv('cam1_vehicle.csv', index=False), args=[]).start()
                                     list_vehicles.discard(ID)
 
 
@@ -350,7 +350,7 @@ class Tracker:
             per image at shape {(1, 3, *imgsz)}' % t)
         if save_vid or save_csv:
             print('Results saved to %s' % os.getcwd() + os.sep + out)
-            self.df.to_csv('vehicle.csv', index=False)
+            self.df.to_csv('cam1_vehicle.csv', index=False)
 
 
 if __name__ == '__main__':

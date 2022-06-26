@@ -18,10 +18,11 @@ evaluate: false
 half: false
 visualize: false
 firebase : true
+came_name: cam1
 
 #in-out
 fourcc: mp4v
-source: videos/highway.mp4
+source: vehicle_cam1.MOV
 #source: 'http://192.168.1.12:8160/'
 output: inference/output
 save_csv: true

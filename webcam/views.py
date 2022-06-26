@@ -75,7 +75,7 @@ def upload_firebase():
     storage = firebase.storage()
     # db = firebase.database()
     if datetime.now().hour == 0 and datetime.now().minute == 0 and datetime.now().second == 0:
-        storage.child("vehicle.csv.csv").put("vehicle.csv")
+        storage.child(came_name + "_vehicle.csv.csv").put(came_name+"_vehicle.csv")
 
 def count_obj(box, w, h, id):
     global count,data
@@ -96,9 +96,9 @@ opt = OPT(config=config)
 
 opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
 df = pd.DataFrame(columns=["VehicleID", "Date", "Time", "Camera", "Speed", "Type"])
-out, source, yolo_weights, deep_sort_weights, show_vid, save_vid, save_txt, save_csv, imgsz, evaluate, half = \
+out, source, yolo_weights, deep_sort_weights, show_vid, save_vid, save_txt, save_csv, imgsz, evaluate, half, came_name = \
     opt.output, opt.source, opt.yolo_weights, opt.deep_sort_weights, opt.show_vid, opt.save_vid, \
-    opt.save_txt, opt.save_csv, opt.imgsz, opt.evaluate, opt.half
+    opt.save_txt, opt.save_csv, opt.imgsz, opt.evaluate, opt.half, opt.came_name
 firebase = True
 
 webcam = source == '0' or source.startswith(
@@ -265,12 +265,12 @@ def detect(df):
                                 str_ID = str(ID)
                                 if opt.save_csv:
                                     df3 = pd.DataFrame([[str_ID, vehicle_infos[ID]['in_time'].strftime('%m/%d/%Y'),
-                                                         vehicle_infos[ID]['in_time'].strftime('%H:%M'), "cam1", 0,
+                                                         vehicle_infos[ID]['in_time'].strftime('%H:%M'), came_name, 0,
                                                          vehicle_infos[ID]['Type']]],
                                                        columns=["VehicleID", "Date", "Time", "Camera", "Speed", "Type"])
 
                                     df = df.append(df3, ignore_index=True)
-                                    Thread(target=df.to_csv('vehicle.csv', index=False), args=[]).start()
+                                    Thread(target=df.to_csv(came_name + '_vehicle.csv', index=False), args=[]).start()
                                 list_vehicles.discard(ID)
 
                 # Visualize deepsort outputs
