@@ -60,6 +60,10 @@ env_path = Path('.', '.env')
 load_dotenv(dotenv_path=env_path)
 
 
+def index(request):
+    return render(request, 'index2.html')
+
+
 def upload_firebase():
     config = {
         "apiKey": os.getenv('apiKey'),
@@ -89,6 +93,7 @@ def count_obj(box, w, h, id):
 async def count_vehicle(request):
     return HttpResponse(count)
 
+
 config = read_yml('settings/config.yml')
 
 opt = OPT(config=config)
@@ -99,10 +104,6 @@ out, source, yolo_weights, deep_sort_weights, show_vid, save_vid, save_txt, save
     opt.output, opt.source, opt.yolo_weights, opt.deep_sort_weights, opt.show_vid, opt.save_vid, \
     opt.save_txt, opt.save_csv, opt.imgsz, opt.evaluate, opt.half
 firebase = True
-came_name = "cam2"
-source = "videos/highway3.mp4"
-webcam = source == '0' or source.startswith(
-    'rtsp') or source.startswith('http') or source.endswith('.txt')
 
 # initialize deepsort
 cfg = get_config()
@@ -136,20 +137,10 @@ if pt:
 # Set Dataloader
 vid_path, vid_writer = None, None
 # Check if environment suvehiclesorts image displays
-if show_vid:
-    show_vid = check_imshow()
 
-# Dataloader
-if webcam:
-    view_img = check_imshow()
-    cudnn.benchmark = True  # set True to speed up constant image size inference
-    dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt and not jit)
-    bs = len(dataset)  # batch_size
-else:
-    dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt and not jit)
-    bs = 1  # batch_size
+# if show_vid:
+#     show_vid = check_imshow()
 
-vid_path, vid_writer = [None] * bs, [None] * bs
 
 # Get names and colors
 
@@ -164,11 +155,26 @@ if pt and device.type != 'cpu':
 
 
 def detect(df):
-    names = model.names
+    came_name = "cam2"
+    source = "videos/highway3.mp4"
+    webcam = source == '0' or source.startswith(
+        'rtsp') or source.startswith('http') or source.endswith('.txt')
+    # Dataloader
+    if webcam:
+        view_img = check_imshow()
+        cudnn.benchmark = True  # set True to speed up constant image size inference
+        dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt and not jit)
+        bs = len(dataset)  # batch_size
+    else:
+        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt and not jit)
+        bs = 1  # batch_size
+
+    vid_path, vid_writer = [None] * bs, [None] * bs
     dt, seen = [0.0, 0.0, 0.0, 0.0], 0
     names = ['Bicycle', 'Bus', 'Car', 'Motorcycle', 'Truck']
     previous_frame, current_frame = [-1, -1]
-    vehicle_infos = {}  # id:{start in view, exit view, type }
+    vehicle_infos = {}
+    # id:{start in view, exit view, type }
     list_vehicles = set()  # LIST CONTAIN vehicles HAS APPEARED, IF THAT VEHICLE HAD BEEN UPLOADED TO DB, REMOVE THAT VEHICLE
     for frame_idx, (path, img, im0s, vid_cap, s) in enumerate(dataset):
         t1 = time_sync()
@@ -243,32 +249,43 @@ def detect(df):
                     for ID in current_IDs:
                         # neu id khong co trong khung hinh truoc va chua tung xuat hien
                         if (ID not in previous_IDs) and (ID not in list_vehicles):
-                            vehicle_infos[ID] = {}
-                            vehicle_infos[ID]['in_time'] = datetime.now()
-                            vehicle_infos[ID]['exit_time'] = datetime.max
-                            vehicle_infos[ID]['Type'] = 'vehicle'
-                            vehicle_infos[ID]['temporarily_disappear'] = 0
+                            try:
+                                vehicle_infos[ID] = {}
+                                vehicle_infos[ID]['in_time'] = datetime.now()
+                                vehicle_infos[ID]['exit_time'] = datetime.max
+                                vehicle_infos[ID]['Type'] = 'vehicle'
+                                vehicle_infos[ID]['temporarily_disappear'] = 0
+                            except:
+                                pass
+
 
                     # for ID in previous_IDs:
                     for ID in copy.deepcopy(list_vehicles):
-                        if (ID not in current_IDs):
-                            vehicle_infos[ID]['Time'] = datetime.now()
-                            vehicle_infos[ID]['temporarily_disappear'] += 1
+                        if ID not in current_IDs:
+                            try:
+                                vehicle_infos[ID]['Time'] = datetime.now()
+                                vehicle_infos[ID]['temporarily_disappear'] += 1
+                                if (vehicle_infos[ID]['temporarily_disappear'] > 75) and \
+                                        (vehicle_infos[ID]['exit_time'] - vehicle_infos[ID]['in_time']) > timedelta(
+                                    seconds=3):
+
+                                    str_ID = str(ID)
+                                    if opt.save_csv:
+                                        df3 = pd.DataFrame([[str_ID, vehicle_infos[ID]['in_time'].strftime('%m/%d/%Y'),
+                                                             vehicle_infos[ID]['in_time'].strftime('%H:%M'), came_name,
+                                                             0,
+                                                             vehicle_infos[ID]['Type']]],
+                                                           columns=["VehicleID", "Date", "Time", "Camera", "Speed",
+                                                                    "Type"])
+
+                                        df = df.append(df3, ignore_index=True)
+                                        Thread(target=df.to_csv(came_name + '_vehicle.csv', index=False),
+                                               args=[]).start()
+                                    list_vehicles.discard(ID)
+                            except:
+                                pass
                             # 25 frame ~ 1 seconds
-                            if (vehicle_infos[ID]['temporarily_disappear'] > 75) and \
-                                    (vehicle_infos[ID]['exit_time'] - vehicle_infos[ID]['in_time']) > timedelta(
-                                seconds=3):
 
-                                str_ID = str(ID)
-                                if opt.save_csv:
-                                    df3 = pd.DataFrame([[str_ID, vehicle_infos[ID]['in_time'].strftime('%m/%d/%Y'),
-                                                         vehicle_infos[ID]['in_time'].strftime('%H:%M'), came_name, 0,
-                                                         vehicle_infos[ID]['Type']]],
-                                                       columns=["VehicleID", "Date", "Time", "Camera", "Speed", "Type"])
-
-                                    df = df.append(df3, ignore_index=True)
-                                    Thread(target=df.to_csv(came_name + '_vehicle.csv', index=False), args=[]).start()
-                                list_vehicles.discard(ID)
 
                 # Visualize deepsort outputs
                 if len(outputs) > 0:
@@ -282,7 +299,11 @@ def detect(df):
                         c = int(cls)  # integer class
                         label = f'{id} {names[c]}'
                         annotator.box_label(bboxes, label, color=colors(c, True))
-                        vehicle_infos[id]['Type'] = names[c]
+                        try:
+                            vehicle_infos[id]['Type'] = names[c]
+                        except:
+                            pass
+
                     vehicles_count, IDs_vehicles = current_frame['n_vehicles_at_time'], current_frame[
                         'VehicleID']
                     LOGGER.info(f'{s}Done. YOLO:({t3 - t2:.3f}s), DeepSort:({t5 - t4:.3f}s)')
