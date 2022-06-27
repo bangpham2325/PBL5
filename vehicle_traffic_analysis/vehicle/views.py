@@ -14,20 +14,11 @@ from django.db.models.functions import TruncMonth,TruncDay
 from django.db.models import Count
 from calendar import monthrange 
 import pandas as pd
+import numpy as np
 from django.db.models import Q
+import os
 # Create your views here.
 import pyrebase
-# neu co 2 cam thi 1 video luu roi tra ve cho fe hien len hoac la ben AI lam luon roi tra ve cho fe.
-# config = {
-#     "apiKey": "AIzaSyDrNUGAjDKbMnki_ZOKVkx5tZchBuC0bto",
-#     "authDomain": "vehicle-detect-tracking.firebaseapp.com",
-#     "databaseURL": "https://vehicle-detect-tracking-default-rtdb.firebaseio.com",
-#     "projectId": "vehicle-detect-tracking",
-#     "storageBucket": "vehicle-detect-tracking.appspot.com",
-#     "messagingSenderId": "100481967903",
-#     "appId": "1:100481967903:web:a1e9d50275dc4e507bb22a",
-#     "measurementId": "G-BZYN2YPNSK"
-# }
 config = {
     "apiKey": "AIzaSyDPmJ7q83NlOnZy-RQgx3rRLE64Q3I-S0g",
     "authDomain": "uploadcsv-c8bfd.firebaseapp.com",
@@ -39,14 +30,16 @@ config = {
     "measurementId": "G-C7WC170JGF"
 }
 firebase = pyrebase.initialize_app(config)
-authe = firebase.auth()
-database = pd.read_csv('vehicle/mainFileVehicleIDdownload.csv')
-
+storage = firebase.storage()
+storage.child("mainFileVehicleID.csv").download('',"mainFileVehicleIDdownload.csv")
 def getData():
+    
     data = VehicleSpeed.objects.all()
     if(data.count()>=1):
         data.delete()
         pass
+    storage.child("mainFileVehicleID.csv").download('',"mainFileVehicleIDdownload.csv")
+    database = pd.read_csv('mainFileVehicleIDdownload.csv')
     for i in database.values:
         ob = VehicleSpeed(  date = convert_datetime(i[1]),
                             time = i[2],
@@ -58,23 +51,7 @@ def getData():
     
 def convert_datetime(date):
     ar= date.split('/')
-    arr = {
-        'Jan':'01',
-        'Feb':'02',
-        'Mar':'03',
-        'Apr':'04',
-        'May':'05',
-        'Jun':'06',
-        'Jul':'07',
-        'Aug':'08',
-        'Sep':'09',
-        'Oct':'10',
-        'Nov':'11',
-        'Dec':'12',
-    }
-    ar[1]=arr[ar[1]]
-    return (str(ar[2])+"-"+str(ar[1])+"-"+str(ar[0]))
-
+    return (str(ar[2])+"-"+str(ar[0])+"-"+str(ar[1]))
 
 def cam(data,camera):
     try:
@@ -126,8 +103,9 @@ def filter_hour(data):
     _21 = data.filter(time__hour=21).count()
     _22 = data.filter(time__hour=22).count()
     _23 = data.filter(time__hour=23).count()
-    _24 = data.filter(time__hour=24).count()
+    _0 = data.filter(time__hour=0).count()
     context = {
+        '0':_0,
         '1':_1,
         '2':_2,
         '3':_3,
@@ -151,7 +129,6 @@ def filter_hour(data):
         '21':_21,
         '22':_22,
         '23':_23,
-        '24':_24,
     }
     return context
 
@@ -183,11 +160,9 @@ def month_year(month,year,camera):
     day_number__count = {}
     for i in arange(1,(monthrange(int(year), int(month))[1])+1):
         day_number__count[f'{i}'] = 0
-    # print(day__count)
     for i in day__count:
         var = i['day'].day
         day_number__count[f'{var}'] = i['count']
-    # print(day_number__count)
     context = get_vehicle_type(data)
     context['chart'] = day_number__count
     context['chart_title'] = "Day"
@@ -219,7 +194,23 @@ class VehicleViewSet(APIView):
     def post(self,request):
         pass
 
-
+# def download_file(request):
+#     # Define Django project base directory
+#     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#     # Define text file name
+#     filename = 'test.txt'
+#     # Define the full file path
+#     filepath = BASE_DIR + '/filedownload/Files/' + filename
+#     # Open the file for reading content
+#     path = open(filepath, 'r')
+#     # Set the mime type
+#     mime_type, _ = mimetypes.guess_type(filepath)
+#     # Set the return value of the HttpResponse
+#     response = HttpResponse(path, content_type=mime_type)
+#     # Set the HTTP header for sending to browser
+#     response['Content-Disposition'] = "attachment; filename=%s" % filename
+#     # Return the response value
+#     return response
 class DetailView(APIView):
     def cam(self,data,camera):
         try:
@@ -262,39 +253,62 @@ class DetailView(APIView):
         data = VehicleSpeed.objects.filter(date__year=year)
         data = self.cam(data,cam)
         # hour AM
-        _1 = data.filter(Q(time__hour=1) | Q(time__hour=2)).count()
-        _2 = data.filter(Q(time__hour=3) | Q(time__hour=4)).count()
-        _3 = data.filter(Q(time__hour=5) | Q(time__hour=6)).count()
-        _4 = data.filter(Q(time__hour=7) | Q(time__hour=8)).count()
-        _5 = data.filter(Q(time__hour=9) | Q(time__hour=10)).count()
-        _6 = data.filter(Q(time__hour=11) | Q(time__hour=12)).count()
-        # hour PM
-        __1 = data.filter(Q(time__hour=13) | Q(time__hour=14)).count()
-        __2 = data.filter(Q(time__hour=15) | Q(time__hour=16)).count()
-        __3 = data.filter(Q(time__hour=17) | Q(time__hour=18)).count()
-        __4 = data.filter(Q(time__hour=19) | Q(time__hour=20)).count()
-        __5 = data.filter(Q(time__hour=21) | Q(time__hour=22)).count()
-        __6 = data.filter(Q(time__hour=23) | Q(time__hour=24)).count()
+        print(np.arange(0,6))
+        morning = {}
+        afternoon = {}
+        night = {}
+        morning_hour = [5,6,7,8,9,10,11,12]
+        afternoon_hour = [13,14,15,16,17]
+        night_hour = [18,19,20,21,22,23,0,1,2,3,4]
+        # morning_count = 0
+        # afternoon_count = 0-66
+        # night_count = 0
+        for i in morning_hour:
+            morning_data = data.filter(time__hour=i)
+            morning[i] = get_vehicle_type(morning_data)
+            morning[i]['count'] = morning_data.count()
+        for i in afternoon_hour:
+            afternoon_data = data.filter(time__hour=i)
+            afternoon[i] = get_vehicle_type(afternoon_data)
+            afternoon[i]['count'] = afternoon_data.count()
+        for i in night_hour:
+            night_data = data.filter(time__hour=i)
+            night[i] = get_vehicle_type(night_data)
+            night[i]['count'] = night_data.count()
+            print(night[i]['count'])
         # season
         ___1 = data.filter(Q(date__month=1) | Q(date__month=2) | Q(date__month=3),date__year=year).count()
         ___2 = data.filter(Q(date__month=4) | Q(date__month=5) | Q(date__month=6),date__year=year).count()
         ___3 = data.filter(Q(date__month=7) | Q(date__month=8) | Q(date__month=9),date__year=year).count()
         ___4 = data.filter(Q(date__month=10) | Q(date__month=11) | Q(date__month=12),date__year=year).count()
-        morning = [_1,_2,_3,_4,_5,_6]
-        night = [__1,__2,__3,__4,__5,__6]
-        max_season = max(___1,___2,___3,___4)
-        season = []
-        if ___1 == max_season:
-            season.append("1")
-        elif ___2 == max_season:
-            season.append("2")
-        elif ___3 == max_season:
-            season.append("3")
-        elif ___4 == max_season:
-            season.append("4")
-        return morning,night,season,max_season
+
+        _4_season = [___1,___2,___3,___4]
+        print(_4_season)
+        max_season = max(_4_season)
+        min_season = min(_4_season)
+        max_value = {}
+        min_value = {}
+        for i in np.arange(4):
+            if _4_season[i] == max_season:
+                max_value = {
+                'name' : i+1,
+                'quantity': max_season,
+                'percent':round((max_season/sum(_4_season))*100,2)
+            }
+            if _4_season[i] == min_season:
+                min_value = {
+                'name' : i+1,
+                'quantity': min_season,
+                'percent':round((min_season/sum(_4_season))*100,2)
+            }
+        season = {
+            'max' : max_value,
+            'min' : min_value,
+        }
+        return season,morning,afternoon,night
     def get(self,request,cam="Cam1"):
         year = request.query_params.get('year')
+        cam = request.query_params.get('cam')
         getData()
         list_years = VehicleSpeed.objects.dates('date', 'year')
         years = []
@@ -302,12 +316,12 @@ class DetailView(APIView):
         for i in list_years:
             years.append(i.year)
             context[int(i.year)] = self.year_filter(int(i.year),cam)
-        morning,night,season,max_season = self.getHourAverage_year(year,cam)
+        season,morning,afternoon,night = self.getHourAverage_year(year,cam)
         context['years'] = years
         context['year_now'] = year
-        context['data_month'] = self.month_year_filter(camera="Cam1",year=2022)
+        context['data_month'] = self.month_year_filter(camera=cam,year=int(year))
         context['morning'] = morning
+        context['afternoon'] = afternoon
         context['night'] = night
         context['season'] = season
-        context['max_season'] = max_season
         return Response(context, status=status.HTTP_201_CREATED)
