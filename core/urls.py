@@ -14,10 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from rest_framework import routers
 from django.urls import path, include
 
+router = routers.DefaultRouter()
 urlpatterns = [
     path('webcam1/', include('webcam.urls')),
     path('webcam2/', include('webcam2.urls')),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('vehicle/', VehicleViewSet.as_view()),
+    # path('camera/', CamViewSet.as_view()),
+    path('detail/', DetailView.as_view()),
 
 ]

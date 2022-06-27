@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webcam',
-    'webcam2'
+    'webcam2',
+    'treblle',
+    'vehicle',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +131,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+TREBLLE_INFO = {
+    'api_key': os.environ.get('TREBLLE_API_KEY'),
+    'project_id': os.environ.get('TREBLLE_PROJECT_ID')
+}
