@@ -145,7 +145,7 @@
         </div>
         <div id="HEADLINE224" class="ladi-element">
           <h3 class="ladi-headline">
-            <span style="font-weight: 700">Theo dõi camera</span>
+            <span style="font-weight: 700"><router-link class="link" :to="{ name: 'home' }" style="text-decoration: none; color: inherit; ">Theo dõi camera</router-link></span>
           </h3>
         </div>
         <div id="SHAPE223" class="ladi-element">
@@ -185,7 +185,7 @@
         </div>
         <div id="HEADLINE228" class="ladi-element">
           <h3 class="ladi-headline">
-            <span style="font-weight: 700">Thống kê chi tiết</span>
+            <span style="font-weight: 700"><router-link class="link" style="color: inherit; text-decoration: none" :to="{ name: 'classification' }">Thống kê chi tiết</router-link></span>
           </h3>
         </div>
         <div id="SHAPE227" class="ladi-element">
@@ -223,6 +223,14 @@
             </svg>
           </div>
         </div>
+        <!-- test -->
+        <div class="img_function" style="top: 300px; right: 0px; position: absolute">
+          <img src="../assets/traffic5.jpg" alt="" style="width: 450px; object-fit: contain;">
+        </div>
+        <div class="img_function" style="top: 500px; left: 0px; position: absolute">
+          <img src="../assets/traffic8.png" alt="" style="width: 450px; object-fit: contain;">
+        </div>
+        <!-- endtest -->
         <div id="LIST_PARAGRAPH225" class="ladi-element"></div>
         <div id="LIST_PARAGRAPH229" class="ladi-element"></div>
       </div>
@@ -335,7 +343,7 @@
               </div>
             </div>
             <div id="HEADLINE264" class="ladi-element">
-              <h3 class="ladi-headline">DƯƠNG ANH TUÂN<br /><br /></h3>
+              <h3 class="ladi-headline">DƯƠNG ANH TUẤN<br /><br /></h3>
             </div>
             <div id="HEADLINE265" class="ladi-element">
               <h3 class="ladi-headline">
@@ -864,36 +872,44 @@ ul {
         }
       }
       #HEADLINE224 {
-        top: 360px;
-        left: 179px;
+        top: 290px;
+        left: 80px;
         .ladi-headline {
           font-family: "Montserrat", sans-serif;
           color: rgb(255, 237, 0);
           font-size: 24px;
           line-height: 1.4;
+          transition: 0.5s all ease-in;
+        }
+        .ladi-headline:hover {
+          color: #fff;
         }
       }
       #SHAPE223 {
         width: 60.0064px;
         height: 56.997px;
-        top: 350px;
-        left: 98px;
+        top: 280px;
+        left: 0px;
       }
       #HEADLINE228 {
-        top: 360px;
-        left: 671.006px;
+        top: 610px;
+        right: 80px;
         .ladi-headline {
           font-family: "Montserrat", sans-serif;
           color: rgb(255, 237, 0);
           font-size: 24px;
           line-height: 1.4;
+          transition: 0.5s all ease-in;
+        }
+        .ladi-headline:hover {
+          color: #fff;
         }
       }
       #SHAPE227 {
         width: 60.0064px;
         height: 56.997px;
-        top: 350px;
-        left: 583.006px;
+        top: 600px;
+        right: 0px;
       }
       #LIST_PARAGRAPH225 {
         width: 407px;
