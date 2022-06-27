@@ -12,19 +12,9 @@ const routes = [
     component: () => import('../views/Introduce.vue')
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue')
-  },
-  {
     path: '/home',
     name: 'home',
     component: HomeView
-  },
-  {
-    path: '/contact',
-    name: 'contact',
-    component: () => import('../views/Contact.vue')
   },
   {
     path: '/classification',
@@ -32,36 +22,10 @@ const routes = [
     component: () => import('../views/Classification.vue')
   },
   {
-    path: '/statistics',
-    name: 'statistics',
-    component: () => import('../views/TrafficStatistics.vue')
-
-  },
-  {
-    path: '/violation',
-    name: 'violation',
-    component: () => import('../views/TrafficViolation.vue')
-  },
-  {
-    path: '/test',
-    name: 'test',
-    component: () => import('../views/TestView.vue')
-  },
-  {
-    path: '/books',
-    name: 'books',
-    component: () => import('../views/TestBooks.vue')
-  },
-  {
     path: '*',
     name: 'error',
     meta: {layout: 'blank'},
     component: () => import('../views/Error.vue')
-  },
-  {
-    path: '/temps',
-    name: 'temps',
-    component: () => import('../views/temp.vue')
   },
 ]
 

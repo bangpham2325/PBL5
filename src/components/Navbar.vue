@@ -75,16 +75,6 @@ export default {
         },
         {
           id: 3,
-          name: "classification",
-          active: false,
-        },
-        {
-          id: 4,
-          name: "violation",
-          active: false,
-        },
-        {
-          id: 5,
           name: "statistics",
           active: false,
         },

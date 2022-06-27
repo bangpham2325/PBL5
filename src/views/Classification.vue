@@ -2,8 +2,6 @@
   <div class="classification">
     <main class="main-content container">
       <div class="container-fluid">
-        <div class="page-header d-md-flex justify-content-between align-items-center">
-        </div>
         <div class="row">
           <div class="page-header d-md-flex justify-content-between align-items-center">
             <div class="col-lg-6 col-md-6 col-sm-6">
@@ -36,7 +34,17 @@
         </div>
 
         <!-- end::page header -->
-
+        <div class="row">
+          <div class="card-header bg-transparent">
+            <div class="row align-items-center">
+              <div class="col">
+                <h5 class="h3 text-black mb-0">
+                  Lượng phương tiện theo năm
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-3">
             <div class="card">
@@ -107,21 +115,22 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="card-header bg-transparent">
-            <div class="row align-items-center">
-              <div class="col">
-                <h5 class="h3 text-black mb-0">
-                  Tổng số phương tiện qua lại mỗi tháng
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
         <!-- page chart month line -->
         <div class="row">
+
           <div class="col-xl-8">
-            <div class="card bg-default">
+            <div class="row">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h5 class="h3 text-black mb-0">
+                      Tổng số phương tiện qua lại mỗi tháng
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card bg-default ">
               <div class="card-body">
                 <div class="chart">
                   <div class="chartjs-size-monitor">
@@ -139,7 +148,18 @@
             </div>
           </div>
           <div class="col-xl-4">
-            <div class="card">
+            <div class="row">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h5 class="h3 text-black mb-0">
+                      Phần trăm loại phương tiện
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mt-30">
               <div class="card-header bg-transparent">
                 <div class="row align-items-center">
                   <div class="col">
@@ -153,7 +173,18 @@
         <div class="row">
           <div data-v-6a4aa1a0="" class="col-lg-3 col-md-12 col-sm-12 p-0">
             <div class="row">
-              <div class="col-lg-12 col-md-6 col-md-6">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h5 class="h3 text-black mb-0">
+                      Phân tích theo quý
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-30" style="display: flex;align-content: center;height: 386px;justify-content: space-between;flex-direction: column;">
+              <div class="col-lg-12 col-md-6 col-md-6 " style="padding-top: 0px;">
                 <div data-v-6a4aa1a0="" class="card">
                   <div data-v-6a4aa1a0="" class="card-header">Max season - season {{ data_season[0].name }}</div>
                   <div data-v-6a4aa1a0="" class="card-body text-center">
@@ -183,7 +214,18 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-9 col-md-12 col-sm-12">
+          <div class="col-lg-9 col-md-12 col-sm-12 " style="padding-top: 0px;">
+            <div class="row">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h5 class="h3 text-black mb-0">
+                      Lượng xe các loại phương tiện theo tháng
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="card bg-default">
               <div class="card-body">
                 <div class="chart">
@@ -204,6 +246,17 @@
         <!-- doing here -->
         <div class="row">
           <div class="col-lg-9 col-md-12 col-sm-12">
+            <div class="row">
+                  <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <h5 class="h3 text-black mb-0">
+                          Lượng xe mỗi loại phương tiện theo giờ và buổi
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             <div class="card bg-default d-flex justify-center align-center">
               <div class="card-body">
                 <div class="chart d-flex" style="justify-content: center">
@@ -222,7 +275,18 @@
           </div>
           <div class="col-lg-3 col-md-12 col-sm-12">
             <div class="row">
-              <div class="col-lg-12 col-md-6 col-md-6">
+                  <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <h5 class="h3 text-black mb-0">
+                          Thống kê
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            <div class="row d-flex h-100">
+              <div class="col-lg-12 col-md-6 col-md-6 mt-6 ">
                 <div data-v-6a4aa1a0="" class="card">
                   <div data-v-6a4aa1a0="" class="card-header">Morning</div>
                   <div data-v-6a4aa1a0="" class="card-body text-center">
@@ -260,6 +324,17 @@
         </div>
         <!-- de o day -->
         <div data-v-6a4aa1a0="" class="row">
+          <div class="row">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h5 class="h3 text-black mb-0">
+                      Lượng phương tiện qua từng năm
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
           <div data-v-6a4aa1a0="" class="col">
             <div data-v-6a4aa1a0="" class="card bg-default">
               <div data-v-6a4aa1a0="" class="card-body">
@@ -1162,10 +1237,23 @@ button:hover {
   font-size: 14px;
   color: #646464;
   background-color: #eff2fa;
-  padding-top: 70px;
+  // padding-top: 70px;
   padding-bottom: 70px;
   height: 100%;
 
+  .bg-default {
+    margin-top: 30px;
+  }
+
+  .mt-30 {
+    margin-top: 30px;
+  }
+  .mt-6{
+    margin-top: 6px;
+  }
+  .card{
+    margin-bottom: 0px;
+  }
   .data-vehicle-intro {
     cursor: pointer;
 
