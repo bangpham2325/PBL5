@@ -17,6 +17,8 @@ from django.contrib import admin
 from rest_framework import routers
 from django.urls import path, include
 
+from vehicle.views import VehicleViewSet, DetailView
+
 router = routers.DefaultRouter()
 urlpatterns = [
     path('webcam1/', include('webcam.urls')),

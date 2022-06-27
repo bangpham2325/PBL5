@@ -60,10 +60,6 @@ env_path = Path('.', '.env')
 load_dotenv(dotenv_path=env_path)
 
 
-def index(request):
-    return render(request, 'index1.html')
-
-
 def upload_firebase():
     config = {
         "apiKey": os.getenv('apiKey'),
@@ -146,11 +142,10 @@ if show_vid:
 
 # Get names and colors
 
+came_name = "cam1"
 save_path = str(Path(out))
 # extract what is in between the last '/' and last '.'
-txt_file_name = source.split('/')[-1].split('.')[0]
-txt_path = str(Path(out)) + '/' + txt_file_name + '.txt'
-csv_path = str(Path(out)) + '/' + txt_file_name + '.csv'
+csv_path = str(Path(out)) + '/' + came_name + '_vehicle' + '.csv'
 
 if pt and device.type != 'cpu':
     model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
@@ -275,7 +270,7 @@ def detect(df):
                                                                     "Type"])
 
                                         df = df.append(df3, ignore_index=True)
-                                        Thread(target=df.to_csv(came_name + '_vehicle.csv', index=False),
+                                        Thread(target=df.to_csv(csv_path, index=False),
                                                args=[]).start()
                                     list_vehicles.discard(ID)
                             except:
