@@ -792,6 +792,7 @@ ul {
           color: rgb(255, 255, 255);
           font-size: 49px;
           line-height: 1.6;
+          -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
       }
@@ -841,6 +842,7 @@ ul {
           color: rgb(255, 255, 255);
           font-size: 49px;
           line-height: 1.6;
+          -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           color: rgb(255, 255, 255);
           font-size: 67px;
@@ -983,6 +985,7 @@ ul {
               color: white;
               font-size: 131px;
               line-height: 1.6;
+              -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
               font-weight: bold;
               text-align: left;
@@ -998,6 +1001,7 @@ ul {
               color: white;
               font-size: 32px;
               line-height: 1.6;
+              -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
               color: white;
               font-size: 32px;
@@ -1078,6 +1082,7 @@ ul {
             color: white;
             font-size: 32px;
             line-height: 1.6;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             color: white;
             font-size: 32px;
@@ -1109,6 +1114,7 @@ ul {
             color: white;
             font-size: 131px;
             line-height: 1.6;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: bold;
             text-align: left;
@@ -1147,6 +1153,7 @@ ul {
             color: white;
             font-size: 131px;
             line-height: 1.6;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: bold;
             text-align: left;
@@ -1160,6 +1167,7 @@ ul {
           .ladi-headline {
             background: linear-gradient(180deg, #ffed00, #ff0000);
             color: white;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             color: white;
             font-size: 32px;
@@ -1186,6 +1194,7 @@ ul {
             color: white;
             font-size: 131px;
             line-height: 1.6;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: bold;
             text-align: left;
@@ -1217,6 +1226,7 @@ ul {
             background: linear-gradient(180deg, #ffed00, #ff0000);
             color: white;
             font-size: 32px;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             color: white;
             font-weight: bold;

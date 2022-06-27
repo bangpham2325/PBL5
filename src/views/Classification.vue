@@ -287,7 +287,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col">
             <div class="card">
               <div class="card-header">
@@ -307,15 +307,15 @@
                       <span>May 17, 2022 - June 15, 2022</span>
                       <i class="ti-angle-down m-l-10"></i>
                     </div>
-                    <button class="btn btn-success m-l-10" onclick="downloadFile()">
+                    <b-button variant="success" onclick="downloadFile">
                       <i class="fa fa-download"></i>
-                    </button>
+                    </b-button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </main>
   </div>
@@ -499,21 +499,22 @@ export default {
     },
   },
   methods: {
-    downloadFile() {
-      axios({
-            url: 'http://localhost:8000/demo.pdf', // File URL Goes Here
-            method: 'GET',
-            responseType: 'blob',
-        }).then((res) => {
-              var FILE = window.URL.createObjectURL(new Blob([res.data]));
+    // downloadFile() {
+    //   consloe.log("Tuan")
+    //   // axios({
+    //   //       url: 'http://localhost:8000/demo.pdf', // File URL Goes Here
+    //   //       method: 'GET',
+    //   //       responseType: 'blob',
+    //   //   }).then((res) => {
+    //   //         var FILE = window.URL.createObjectURL(new Blob([res.data]));
               
-              var docUrl = document.createElement('x');
-              docUrl.href = FILE;
-              docUrl.setAttribute('download', 'file.pdf');
-              document.body.appendChild(docUrl);
-              docUrl.click();
-      });
-    },
+    //   //         var docUrl = document.createElement('x');
+    //   //         docUrl.href = FILE;
+    //   //         docUrl.setAttribute('download', 'file.pdf');
+    //   //         document.body.appendChild(docUrl);
+    //   //         docUrl.click();
+    //   // });
+    // },
     async getAllAPI() {
       try {
         var e = document.querySelector(".select_year_option");

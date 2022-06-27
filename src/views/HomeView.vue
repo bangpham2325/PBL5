@@ -10,7 +10,7 @@
                   <v-select :items="cameras" v-model="selected_camera" class="choice-camera mr-3" label="Choice camera"
                     dense>
                   </v-select>
-                  <v-btn color="primary" class="mr-3" elevation="2">Request</v-btn>
+                  <v-btn color="primary" class="mr-3 " elevation="2" @click="Choice_Cam_Video()">Request</v-btn>
                   <span class="camera-name">You choose: {{ selected_camera }}</span>
                   <v-spacer></v-spacer>
                   <v-chip class="ma-2" id="real_time" color="white">
@@ -25,7 +25,7 @@
               <v-col cols="12" sm="24">
                 <v-card class="mx-12 rounded-tl-xl rounded-tr-xl rounded-bl-xl rounded-br-xl mt-n15">
                   <v-list-item three-line id="video-analysis">
-                    <img src="http://127.0.0.1:8000/video_feed/" class="w-100 h-100" alt="">
+                    <img  :src="'http://127.0.0.1:8000/' + imgPreUrl +'/'" class="w-100 h-100" alt="">
                   </v-list-item>
                 </v-card>
               </v-col>
@@ -175,8 +175,6 @@ export default {
   async created(){
     // await this.fetchAPI_Year();
     await this.fetchAPI();
-    document.getElementById('real_time').innerHTML(moment().format("LTS"));
-    setInterval(() => this.updateCurrentTime(), 1 * 1000);
   },
   data: () => ({
     BE : [],
@@ -193,6 +191,7 @@ export default {
       format: "DD/MM/YYYY",
       useCurrent: true,
     },
+    imgPreUrl : "webcam2",
     task: [],
     width: 2,
     radius: 10,
@@ -515,6 +514,23 @@ export default {
       console.log(this.task.chart_title)
 
       console.log('task: ', this.task)
+    },
+    Choice_Cam_Video(){
+      console.log("cam1")
+      if(this.selected_camera == "Cam1"){
+        this.imgPreUrl = "webcam1"
+        console.log("cam1")
+      }
+      else{
+        this.imgPreUrl = "webcam2"
+        console.log("cam2")
+      }
+      axios({
+        method: 'get',
+        url: "http://localhost:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + "&camera=" + this.selected_camera,
+        // url: "http://127.0.0.1:8000/vehicle?year=2022&day=&month=&camera=Cam1"
+      }).then(response => this.task = response.data);
+      this.loadDataToChart()
     }
   },
   mounted() {   
