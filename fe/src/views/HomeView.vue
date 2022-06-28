@@ -13,10 +13,7 @@
                   <v-btn color="primary" class="mr-3 " elevation="2" @click="Choice_Cam_Video()">Request</v-btn>
                   <span class="camera-name">You choose: {{ selected_camera }}</span>
                   <v-spacer></v-spacer>
-                  <v-chip class="ma-2" id="real_time" color="white">
-                    <v-icon left color="teal"> mdi-clock-time-nine </v-icon>
-                    14:02 AM Today May,22
-                  </v-chip>
+                  
                 </v-app-bar>
               </v-col>
               <v-col cols="12" sm="12">
@@ -29,11 +26,15 @@
                   </v-list-item>
                 </v-card>
               </v-col>
-              <v-col cols="12" sm="12">
+              <v-col cols="12" sm="12" class="mb-3">
+                <h5 data-v-6a4aa1a0="" class="h3 text-black mb-0" id="title-of-chart" style="margin: 30px;border-bottom: 1px solid;"> 
+                  Tổng lượng xe theo các giờ trong ngày 
+                </h5>
                 <canvas id="myChart" width="400" height="200"></canvas>
               </v-col>
-              <v-col cols="12" sm="12">
-                <canvas id="myChartLine" width="400" height="200"></canvas>
+              <v-col cols="12" sm="12" >
+
+                <canvas id="myChartLine" style="display:none" width="400" height="200"></canvas>
               </v-col>
             </v-row>
           </v-container>
@@ -125,7 +126,7 @@
                     {{ month.name }}
                   </option>
                 </select>
-                <select v-model="selected_year" class="select-choice select-year text-center" style="width: 20%"
+                <select v-model="selected_year" class="select-choice select-year text-center" style="width: 20%;padding: 10px;border: 2px solid #00897b;border-radius: 10px;"
                   @change="onChangeYear()">
                   <option v-for="(year, index) in years" :key="index">
                     {{ year }}
@@ -134,7 +135,7 @@
                 <v-btn class="ml-3" style="background-color: #00897b; color: #fff" @click="requestMonth">Request</v-btn>
               </v-col>
               <v-col v-show="list_time_analysis_choice[2].active == true" cols="12" sm="12" class="mb-3">
-                <select v-model="selected_year" class="select-choice select-year text-center" style="width: 30%">
+                <select v-model="selected_year" class="select-choice select-year text-center" style="width: 30%;padding: 10px;border: 2px solid #00897b;border-radius: 10px;">
                   <option v-for="(year, index) in years" :key="index">
                     {{ year }}
                   </option>
@@ -143,9 +144,7 @@
               </v-col>
 
               <v-col cols="12" sm="12">
-                <v-btn text>Your Traitment
-                  <v-icon right> mdi-chevron-down </v-icon>
-                </v-btn>
+                <h5 data-v-6a4aa1a0="" class="h3 text-black mb-0" style="text-align: center;"> Phần trăm loại xe </h5>
               </v-col>
               <v-col cols="12" sm="12">
                 <canvas id="myChartDougnut" width="400" height="400"></canvas>
@@ -191,7 +190,7 @@ export default {
       format: "DD/MM/YYYY",
       useCurrent: true,
     },
-    imgPreUrl : "webcam1",
+    imgPreUrl : "webcam2",
     task: [],
     width: 2,
     radius: 10,
@@ -214,12 +213,12 @@ export default {
     list_time_analysis_choice: [
       {
         id: 0,
-        name: "Month",
+        name: "Day",
         active: true,
       },
       {
         id: 1,
-        name: "Day",
+        name: "Month",
         active: false,
       },
       {
@@ -354,6 +353,7 @@ export default {
         this.myChartLine.update();
         document.getElementById('myChart').style.display = "none";
         document.getElementById('myChartLine').style.display = "block";
+        document.getElementById('title-of-chart').innerHTM = "Tổng lượng xe theo các giờ trong ngày";
       }
       else if (this.task.chart_title == "Day"){
         this.fetchAPI();
@@ -364,6 +364,7 @@ export default {
         this.myChartLine.update();
         document.getElementById('myChart').style.display = "none";
         document.getElementById('myChartLine').style.display = "block";
+        document.getElementById('title-of-chart').innerHTML="Tổng lượng xe theo các ngày trong tháng";
       }
       else {
         this.fetchAPI();
@@ -403,6 +404,7 @@ export default {
         this.myChart.update();
         document.getElementById('myChartLine').style.display = "none";
         document.getElementById('myChart').style.display = "block";
+        document.getElementById('title-of-chart').innerHTML="Tổng lượng xe theo các tháng trong năm";
       }
       this.set_data_doughnut()
     },
@@ -445,7 +447,7 @@ export default {
     async get_Tasks() {
       await axios({
         method: 'get',
-        url: "http://127.0.0.1:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + this.selected_month.number + "&camera=" + this.selected_camera,
+        url: "http://localhost:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + this.selected_month.number + "&camera=" + this.selected_camera,
         // url: "http://127.0.0.1:8000/vehicle?year=2022&day=&month=&camera=Cam1"
       }).then(response => this.task = response.data);
       this.loadDataToChart()
@@ -456,7 +458,7 @@ export default {
         console.log(this.months.filter(function(el){return el.name == "November"})[0])
         axios
           .get(
-            `http://127.0.0.1:8000/vehicle?year=${this.selected_year}&day=&month=${this.selected_month.number}&camera=${this.selected_camera}`
+            `http://localhost:8000/vehicle?year=${this.selected_year}&day=&month=${this.selected_month.number}&camera=${this.selected_camera}`
           )
           .then((response) => {
             this.task = response.data;
@@ -474,7 +476,7 @@ export default {
         let year = dateString[2];
         axios
           .get(
-            `http://127.0.0.1:8000/vehicle?year=${year}&day=${date}&month=${month}&camera=${this.selected_camera}`
+            `http://localhost:8000/vehicle?year=${year}&day=${date}&month=${month}&camera=${this.selected_camera}`
           )
           .then((response) => {
             this.task = response.data;
@@ -489,7 +491,7 @@ export default {
         console.log("@@@: " + this.selected_year);
         axios
           .get(
-            `http://127.0.0.1:8000/vehicle?year=${this.selected_year}&day=&month=&camera=${this.selected_camera}`
+            `http://localhost:8000/vehicle?year=${this.selected_year}&day=&month=&camera=${this.selected_camera}`
           )
           .then((response) => {
             this.task = response.data;
@@ -507,7 +509,7 @@ export default {
       alert(this.selected_year)
       axios({
         method: 'get',
-        // url: "http://127.0.0.1:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + this.selected_month.number + "&camera=" + this.cam,
+        // url: "http://localhost:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + this.selected_month.number + "&camera=" + this.cam,
         url: "http://127.0.0.1:8000/vehicle?year=2022&day=21&month=4&camera=Cam1"
 
       }).then(response => this.task = response.data);
@@ -527,7 +529,7 @@ export default {
       }
       axios({
         method: 'get',
-        url: "http://127.0.0.1:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + "&camera=" + this.selected_camera,
+        url: "http://localhost:8000/vehicle?year=" + this.selected_year + "&day=" + "&month=" + "&camera=" + this.selected_camera,
         // url: "http://127.0.0.1:8000/vehicle?year=2022&day=&month=&camera=Cam1"
       }).then(response => this.task = response.data);
       this.loadDataToChart()
@@ -665,7 +667,11 @@ date-picker {
     background-color: #00897b !important;
     color: #fff !important;
   }
-
+  select.select-year{
+    padding: 10px;
+    border: 2px solid #00897b;
+    border-radius: 10px;
+  }
   .btn-analysis-active {
     background-color: #00897b !important;
     color: #fff !important;
