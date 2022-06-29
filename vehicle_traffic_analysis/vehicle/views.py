@@ -17,40 +17,57 @@ import pandas as pd
 import numpy as np
 from django.db.models import Q
 import os
+from threading import Timer
 # Create your views here.
 import pyrebase
 config = {
-    "apiKey": "AIzaSyDPmJ7q83NlOnZy-RQgx3rRLE64Q3I-S0g",
-    "authDomain": "uploadcsv-c8bfd.firebaseapp.com",
-    "databaseURL": "https://uploadcsv-c8bfd-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "projectId": "uploadcsv-c8bfd",
-    "storageBucket": "uploadcsv-c8bfd.appspot.com",
+    "apiKey": "AIzaSyBn5WdGXBiFegf_g6VD6mzDK7HwcuVXfCQ",
+    "authDomain": "vehicle-1784e.firebaseapp.com",
+    "databaseURL": "https://vehicle-1784e.firebaseio.com",
+    "projectId": "vehicle-1784e",
+    "storageBucket": "vehicle-1784e.appspot.com",
     "messagingSenderId": "939407755660",
     "appId": "1:939407755660:web:9014bdb0c480453032eea9",
     "measurementId": "G-C7WC170JGF"
 }
 firebase = pyrebase.initialize_app(config)
 storage = firebase.storage()
-storage.child("mainFileVehicleID.csv").download('',"mainFileVehicleIDdownload.csv")
-def getData():
-    
-    data = VehicleSpeed.objects.all()
-    if(data.count()>=1):
-        data.delete()
-        pass
-    storage.child("mainFileVehicleID.csv").download('',"mainFileVehicleIDdownload.csv")
-    database = pd.read_csv('mainFileVehicleIDdownload.csv')
-    for i in database.values:
-        ob = VehicleSpeed(  date = convert_datetime(i[1]),
-                            time = i[2],
-                            camera = i[3],
-                            speed=float(i[4]),
-                            number_plate="",
-                            vehicle_type=i[5])
-        ob.save()
+storage.child("cam1_vehicle.csv").download('',"cam1_vehicleIDdownload.csv")
+getData_isready = False
+def getData(delay_repeat=3600):
+    global getData_isready
+    if(not getData_isready):
+        data = VehicleSpeed.objects.all()
+        if(data.count()>=1):
+            data.delete()
+            pass
+        storage.child("cam1_vehicle.csv").download('',"cam1_vehicleIDdownload.csv")
+        database = pd.read_csv('cam1_vehicleIDdownload.csv')
+        for i in database.values:
+            ob = VehicleSpeed(  date = convert_datetime(i[1]),
+                                time = i[2],
+                                camera = i[3],
+                                speed=float(i[4]),
+                                number_plate="",
+                                vehicle_type=i[5])
+            ob.save()
+        storage.child("cam2_vehicle.csv").download('',"cam2_vehicleIDdownload.csv")
+        database = pd.read_csv('cam2_vehicleIDdownload.csv')
+        for i in database.values:
+            ob = VehicleSpeed(  date = convert_datetime(i[1]),
+                                time = i[2],
+                                camera = i[3],
+                                speed=float(i[4]),
+                                number_plate="",
+                                vehicle_type=i[5])
+            ob.save()
+        print("Tuan")
+        getData_isready = True
+        Timer(delay_repeat, getData, (delay_repeat, )).start()
+        getData_isready = False
     
 def convert_datetime(date):
-    ar= date.split('/')
+    ar= str(date).split('/')
     return (str(ar[2])+"-"+str(ar[0])+"-"+str(ar[1]))
 
 def cam(data,camera):
@@ -194,23 +211,6 @@ class VehicleViewSet(APIView):
     def post(self,request):
         pass
 
-# def download_file(request):
-#     # Define Django project base directory
-#     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#     # Define text file name
-#     filename = 'test.txt'
-#     # Define the full file path
-#     filepath = BASE_DIR + '/filedownload/Files/' + filename
-#     # Open the file for reading content
-#     path = open(filepath, 'r')
-#     # Set the mime type
-#     mime_type, _ = mimetypes.guess_type(filepath)
-#     # Set the return value of the HttpResponse
-#     response = HttpResponse(path, content_type=mime_type)
-#     # Set the HTTP header for sending to browser
-#     response['Content-Disposition'] = "attachment; filename=%s" % filename
-#     # Return the response value
-#     return response
 class DetailView(APIView):
     def cam(self,data,camera):
         try:
@@ -260,9 +260,6 @@ class DetailView(APIView):
         morning_hour = [5,6,7,8,9,10,11,12]
         afternoon_hour = [13,14,15,16,17]
         night_hour = [18,19,20,21,22,23,0,1,2,3,4]
-        # morning_count = 0
-        # afternoon_count = 0-66
-        # night_count = 0
         for i in morning_hour:
             morning_data = data.filter(time__hour=i)
             morning[i] = get_vehicle_type(morning_data)
