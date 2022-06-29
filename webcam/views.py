@@ -145,7 +145,7 @@ if show_vid:
 came_name = "cam1"
 save_path = str(Path(out))
 # extract what is in between the last '/' and last '.'
-csv_path = str(Path(out)) + '/' + came_name + '_vehicle' + '.csv'
+# csv_path = str(Path(out)) + '/' + came_name + '_vehicle' + '.csv'
 
 if pt and device.type != 'cpu':
     model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
@@ -270,7 +270,7 @@ def detect(df):
                                                                     "Type"])
 
                                         df = df.append(df3, ignore_index=True)
-                                        Thread(target=df.to_csv(csv_path, index=False),
+                                        Thread(target=df.to_csv("./data/cam1_vehicle.csv", index=False),
                                                args=[]).start()
                                     list_vehicles.discard(ID)
                             except:

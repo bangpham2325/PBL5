@@ -22,9 +22,9 @@ came_name: cam1
 
 #in-out
 fourcc: mp4v
-source: videos/vehiclecam1.MOV
-#source: 'http://192.168.1.12:8160/'
-output: data
+source: videos/video2.mp4
+#source: 'http://172.20.10.2:8160/'
+output: inference/output
 save_csv: true
 save_txt: false
 save_vid: false

@@ -190,7 +190,7 @@ export default {
       format: "DD/MM/YYYY",
       useCurrent: true,
     },
-    imgPreUrl : "webcam2",
+    imgPreUrl : "webcam1",
     task: [],
     width: 2,
     radius: 10,
@@ -332,7 +332,7 @@ export default {
         name: "January",
       },
     selected_date: new Date(),
-    years: ["2016", "2017", "2018", "2019", "2020", "2021", "2022"],
+    years: ["2020", "2021", "2022"],
     selected_year: "2022",
     cameras: ["Cam1", "Cam2"],
     selected_camera: "Cam1",
@@ -345,19 +345,17 @@ export default {
   methods: {
     loadDataToChart(){
       if (this.task.chart_title == "Hour"){
-        this.fetchAPI()
-        console.log("Da teeeee");
+        this.fetchAPI();
         this.myChartLine.data.datasets[0].data = Object.values(this.task.hour);
         this.myChartLine.data.datasets[0].label = "HOURS ON A DAY"
         this.myChartLine.data.labels = Object.keys(this.task.hour);
         this.myChartLine.update();
         document.getElementById('myChart').style.display = "none";
         document.getElementById('myChartLine').style.display = "block";
-        document.getElementById('title-of-chart').innerHTM = "Tổng lượng xe theo các giờ trong ngày";
+        document.getElementById('title-of-chart').innerHTML = "Tổng lượng xe theo các giờ trong ngày";
       }
       else if (this.task.chart_title == "Day"){
         this.fetchAPI();
-        console.log("Da teeeee");
         this.myChartLine.data.datasets[0].data = Object.values(this.task.chart);
         this.myChartLine.data.datasets[0].label = "DAYS IN MONTH"
         this.myChartLine.data.labels = Object.keys(this.task.chart);
@@ -368,7 +366,6 @@ export default {
       }
       else {
         this.fetchAPI();
-        console.log("Da teeeee");
         this.myChart.data.datasets[0].data = Object.values(this.task.chart);
         this.myChart.data.datasets[0].label = "MONTHS IN YEAR"
         this.myChart.data.labels = Object.keys(this.task.chart);
