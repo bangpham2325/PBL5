@@ -143,7 +143,7 @@ if show_vid:
 # Get names and colors
 
 came_name = "cam1"
-save_path = str(Path(out))
+
 # extract what is in between the last '/' and last '.'
 # csv_path = str(Path(out)) + '/' + came_name + '_vehicle' + '.csv'
 
@@ -153,6 +153,8 @@ if pt and device.type != 'cpu':
 
 def detect(df):
     # Dataloader
+    save_path = str(Path(out))
+    csv_path = 'data/cam1_vehicle.csv'
     if webcam:
         view_img = check_imshow()
         cudnn.benchmark = True  # set True to speed up constant image size inference
@@ -270,8 +272,7 @@ def detect(df):
                                                                     "Type"])
 
                                         df = df.append(df3, ignore_index=True)
-                                        Thread(target=df.to_csv("./data/cam1_vehicle.csv", index=False),
-                                               args=[]).start()
+                                        Thread(target=df.to_csv(csv_path, header=False), args=[]).start()
                                     list_vehicles.discard(ID)
                             except:
                                 pass

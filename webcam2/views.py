@@ -140,17 +140,17 @@ vid_path, vid_writer = None, None
 
 # Get names and colors
 came_name = "cam2"
-save_path = str(Path(out))
-# extract what is in between the last '/' and last '.'
-# csv_path = str(Path(out)) + '/' + came_name + '_vehicle' + '.csv'
 
+
+# extract what is in between the last '/' and last '.'
 if pt and device.type != 'cpu':
     model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
 
 
 def detect(df):
+    save_path = str(Path(out))
     source = "./videos/Traffic.mp4"
-    filepath = Path('./data/cam2_vehicle.csv')
+    csv_path = 'data/cam2_vehicle.csv'
     # filepath.parent.mkdir(parents=True, exist_ok=True)
     webcam = source == '0' or source.startswith(
         'rtsp') or source.startswith('http') or source.endswith('.txt')
@@ -274,8 +274,12 @@ def detect(df):
                                                                     "Type"])
 
                                         df = df.append(df3, ignore_index=True)
-                                        Thread(target=df.to_csv("cam2_vehicle.csv", index=False),
-                                               args=[]).start()
+
+                                        if not os.path.isfile(csv_path):
+                                            Thread(target=df.to_csv(csv_path, header='column_names'), args=[]).start()
+                                        else:
+                                            Thread(target=df.to_csv(csv_path, header=False), args=[]).start()
+
                                     list_vehicles.discard(ID)
                             except:
                                 pass
