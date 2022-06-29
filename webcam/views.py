@@ -58,6 +58,7 @@ sheet = {}
 now = datetime.now()
 env_path = Path('.', '.env')
 load_dotenv(dotenv_path=env_path)
+came_name = "cam1"
 
 
 def upload_firebase():
@@ -73,8 +74,8 @@ def upload_firebase():
     firebase = pyrebase.initialize_app(config)
     storage = firebase.storage()
     # db = firebase.database()
-    if datetime.now().hour == 0 and datetime.now().minute == 0 and datetime.now().second == 0:
-        storage.child(came_name + "_vehicle.csv.csv").put(came_name + "_vehicle.csv")
+    if datetime.now().hour == 0 and datetime.now().minute == 0:
+        storage.child(came_name + "_vehicle.csv").put("data/"+came_name + "_vehicle.csv")
 
 
 def count_obj(box, w, h, id):
@@ -142,7 +143,7 @@ if show_vid:
 
 # Get names and colors
 
-came_name = "cam1"
+
 
 # extract what is in between the last '/' and last '.'
 # csv_path = str(Path(out)) + '/' + came_name + '_vehicle' + '.csv'
@@ -151,7 +152,7 @@ if pt and device.type != 'cpu':
     model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
 
 
-def detect(df):
+def detect():
     # Dataloader
     save_path = str(Path(out))
     csv_path = 'data/cam1_vehicle.csv'
@@ -256,23 +257,25 @@ def detect(df):
                     for ID in copy.deepcopy(list_vehicles):
                         if ID not in current_IDs:
                             try:
-                                vehicle_infos[ID]['Time'] = datetime.now()
+                                vehicle_infos[ID]['exit_time'] = datetime.now()
                                 vehicle_infos[ID]['temporarily_disappear'] += 1
                                 if (vehicle_infos[ID]['temporarily_disappear'] > 75) and \
-                                        (vehicle_infos[ID]['exit_time'] - vehicle_infos[ID]['in_time']) > timedelta(
-                                    seconds=3):
+                                        ((vehicle_infos[ID]['exit_time'] - vehicle_infos[ID]['in_time']) > timedelta(seconds=3)):
 
                                     str_ID = str(ID)
                                     if opt.save_csv:
                                         df3 = pd.DataFrame([[str_ID, vehicle_infos[ID]['in_time'].strftime('%m/%d/%Y'),
-                                                             vehicle_infos[ID]['in_time'].strftime('%H:%M'), came_name,
+                                                             vehicle_infos[ID]['in_time'].strftime('%H:%M:%S'), came_name,
                                                              0,
                                                              vehicle_infos[ID]['Type']]],
                                                            columns=["VehicleID", "Date", "Time", "Camera", "Speed",
                                                                     "Type"])
-
-                                        df = df.append(df3, ignore_index=True)
-                                        Thread(target=df.to_csv(csv_path, header=False), args=[]).start()
+                                        # df = df.append(df3, ignore_index=True)
+                                        if not os.path.isfile(csv_path):
+                                            Thread(target=df3.to_csv(csv_path, header='column_names'), args=[]).start()
+                                        else:
+                                            Thread(target=df3.to_csv(csv_path, mode='a', header=False, index=False),
+                                                   args=[]).start()
                                     list_vehicles.discard(ID)
                             except:
                                 pass
@@ -357,4 +360,4 @@ def detect(df):
 
 
 async def video_cam1(request):
-    return StreamingHttpResponse(detect(df), content_type='multipart/x-mixed-replace; boundary=frame')
+    return StreamingHttpResponse(detect(), content_type='multipart/x-mixed-replace; boundary=frame')
